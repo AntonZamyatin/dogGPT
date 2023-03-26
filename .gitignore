@@ -1,2 +1,5 @@
 dog_venv/
+img/
+logs/
+userpics/
 .env

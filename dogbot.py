@@ -1,18 +1,26 @@
+from typing import List, Optional, TYPE_CHECKING
 import os
 from datetime import datetime
 from time import sleep
 from tg_bot import TG_BOT
-import openai
+from gptapi import GPT_API
 from dotenv import load_dotenv
+from nltk.tokenize import RegexpTokenizer
 
+if TYPE_CHECKING:
+    from telegram import Update
+    
 class Dog():
 
     def __init__(self):
         self.__set_credentials()
         self.tg_bot: TG_BOT = TG_BOT(self, self.tg_bot_token)
+        self.gptapi: GPT_API = GPT_API(self.openai_org_id,
+                                       self.openai_api_key)
         self.root: str = os.path.dirname(os.path.realpath(__file__))
         self.log_path: str = self.root + '/logs'
         self.img_path: str = self.root + '/img'
+        self.tokenizer: RegexpTokenizer = RegexpTokenizer(r'\w+')
         
     def __set_credentials(self) -> None:
         load_dotenv()
@@ -30,6 +38,17 @@ class Dog():
         with open(logfile, 'a') as lf:
             print(f'{now.hour}:{now.minute}:{now.second}:{now.microsecond}',
                   text,sep='\t', file=lf)
+            
+    async def process_group_message(self, update: 'Update') -> None:
+        message_text = update.effective_message.text
+        print('have message', message_text)
+        tokens = self.tokenizer.tokenize(message_text)
+        if tokens[0].lower() in ('пес', 'dog', 'псина', 'собака', 'пёс', 'собачка'):
+            prompt = ' '.join(message_text.split()[1:])
+            with open('log.txt', 'a') as lf:
+                print(f'\tasking: {prompt}', file=lf)
+            responce: str = self.gptapi.get_responce(prompt)
+            await update.effective_message.reply_text(responce)
     
     def run(self) -> None:
         self.write_to_botlog('INFO\tDog started')
