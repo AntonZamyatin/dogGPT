@@ -6,6 +6,7 @@ from tg_bot import TG_BOT
 from gptapi import GPT_API
 from dotenv import load_dotenv
 from nltk.tokenize import RegexpTokenizer
+from word_lists import DOGBOT_TRIGGERS, BAD_WORDS
 
 if TYPE_CHECKING:
     from telegram import Update
@@ -41,9 +42,11 @@ class Dog():
             
     async def process_group_message(self, update: 'Update') -> None:
         message_text = update.effective_message.text
+        if any([x in message_text.lower() for x in BAD_WORDS]):
+            await update.effective_message.reply_text('Не ругайся')
         print('have message', message_text)
         tokens = self.tokenizer.tokenize(message_text)
-        if tokens and tokens[0].lower() in ('пес', 'dog', 'псина', 'собака', 'пёс', 'собачка'):
+        if tokens and tokens[0].lower() in DOGBOT_TRIGGERS:
             prompt = ' '.join(message_text.split()[1:])
             with open('log.txt', 'a') as lf:
                 print(f'\tasking: {prompt}', file=lf)
