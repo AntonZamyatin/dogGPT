@@ -15,8 +15,8 @@ logging.basicConfig(
 
 def escape_markdown(text: str) -> str:
     """Escape characters in the given text that have special meaning in Markdown."""
-    escape_chars = r'()-|.!'
-    return re.sub(r'([{}])'.format(re.escape(escape_chars)), r'\\\1', text)
+    escape_chars = r'_[]()`>#+-=|{}.!'
+    return re.sub(r'+([{}])'.format(re.escape(escape_chars)), r'\\\1', text)
 
 
 class TG_BOT():
