@@ -50,8 +50,9 @@ class Dog():
             prompt = ' '.join(message_text.split()[1:])
             with open('log.txt', 'a') as lf:
                 print(f'\tasking: {prompt}', file=lf)
-            responce: str = self.gptapi.get_responce(prompt)
-            await update.effective_message.reply_text(responce)
+            num_tokens, responce = self.gptapi.get_responce(prompt)
+            responce = f'tokens used: {num_tokens}  |  it costs: {num_tokens*2*10**-6:.2}$\n---\n{responce}'
+            await self.tg_bot.reply_on_message(update, responce)
     
     def run(self) -> None:
         self.write_to_botlog('INFO\tDog started')

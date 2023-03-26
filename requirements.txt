@@ -2,3 +2,4 @@ openai==0.27.2
 python-dotenv==1.0.0
 python-telegram-bot==20.2
 nltk==3.8.1
+tiktoken==0.3.2
