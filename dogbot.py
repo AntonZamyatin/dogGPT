@@ -54,6 +54,12 @@ class Dog():
             responce = f'tokens used: {num_tokens}  |  it costs: {num_tokens*2*10**-6:.2}$\n---\n{responce}'
             await self.tg_bot.reply_on_message(update, responce)
     
+    async def process_private_message(self, update: 'Update') -> None:
+        message_text = update.effective_message.text
+        num_tokens, responce = self.gptapi.get_responce(message_text)
+        responce = f'tokens used: {num_tokens}  |  it costs: {num_tokens*2*10**-6:.2}$\n---\n{responce}'
+        await self.tg_bot.reply_on_message(update, responce)
+    
     def run(self) -> None:
         self.write_to_botlog('INFO\tDog started')
         while True:

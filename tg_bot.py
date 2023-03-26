@@ -46,6 +46,8 @@ class TG_BOT():
         chat = update.effective_chat
         if chat.type in (Chat.GROUP, Chat.SUPERGROUP):
             await self.dog.process_group_message(update)
+        elif chat.type == Chat.PRIVATE:
+            await self.dog.process_private_message(update)
             
     async def reply_on_message(self, update: Update, responce: str) -> None:
         await update.effective_message.reply_markdown_v2(escape_markdown(responce))
