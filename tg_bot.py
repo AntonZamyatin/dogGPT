@@ -38,8 +38,7 @@ class TG_BOT():
     async def message_proc(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         user_name = update.effective_user.full_name
         chat = update.effective_chat
-        if chat.type == Chat.GROUP:
-            print('have_message')
+        if chat.type in (Chat.GROUP, Chat.SUPERGROUP):
             await self.dog.process_group_message(update)
     
     def run(self) -> None:

@@ -43,7 +43,7 @@ class Dog():
         message_text = update.effective_message.text
         print('have message', message_text)
         tokens = self.tokenizer.tokenize(message_text)
-        if tokens[0].lower() in ('пес', 'dog', 'псина', 'собака', 'пёс', 'собачка'):
+        if tokens and tokens[0].lower() in ('пес', 'dog', 'псина', 'собака', 'пёс', 'собачка'):
             prompt = ' '.join(message_text.split()[1:])
             with open('log.txt', 'a') as lf:
                 print(f'\tasking: {prompt}', file=lf)

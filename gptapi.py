@@ -7,7 +7,6 @@ class GPT_API():
         openai.api_key = api_key
         
     def get_responce(self, prompt: str) -> str:
-        print('asking: ', prompt)
         try:
             completion = openai.ChatCompletion.create(
                          model="gpt-3.5-turbo",
