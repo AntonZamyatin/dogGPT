@@ -12,11 +12,11 @@ class GPT_API():
         try:
             sending_messages=[{"role": "system", "content": "You are qute speaking dog-assistant"},
                               {"role": "user", "content": prompt}]
-            num_tokens = self.get_num_tokens_for_sending(sending_messages)
-            completion = openai.ChatCompletion.create(
-                         model="gpt-3.5-turbo",
-                         messages=sending_messages)
-            return num_tokens, completion.choices[0].message['content'].strip()
+            completion = openai.ChatCompletion.create(model="gpt-3.5-turbo",
+                                                      messages=sending_messages)
+            num_tokens: int = completion.usage.prompt_tokens
+            responce: str = completion.choices[0].message['content'].strip()
+            return num_tokens, responce
         except Exception as e:
             print(e)
             

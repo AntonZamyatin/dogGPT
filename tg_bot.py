@@ -15,7 +15,7 @@ logging.basicConfig(
 
 def escape_markdown(text: str) -> str:
     """Escape characters in the given text that have special meaning in Markdown."""
-    escape_chars = r'_[]()`>#+-=|{}.!'
+    escape_chars = r'_[]()>#+-=|{}.!'
     return re.sub(r'([{}])'.format(re.escape(escape_chars)), r'\\\1', text)
 
 
@@ -42,6 +42,7 @@ class TG_BOT():
         await update.message.reply_markdown_v2(text="I'm a bot, please talk to me!")
         
     async def message_proc(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        await context.bot.send_chat_action(chat_id=update.effective_chat.id, action='typing')
         user_name = update.effective_user.full_name
         chat = update.effective_chat
         if chat.type in (Chat.GROUP, Chat.SUPERGROUP):
