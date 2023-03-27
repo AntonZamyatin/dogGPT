@@ -44,6 +44,7 @@ class Dog():
         return decorator
     
     async def process_group_message(self, update: 'Update') -> None:
+        self.logger.chatlog(message_text, chat, user)
         message_text: str = update.effective_message.text
         user: 'User' = update.effective_user
         chat: 'Chat' = update.effective_chat
@@ -51,13 +52,12 @@ class Dog():
             await update.effective_message.reply_text('Не ругайся')
         tokens = self.tokenizer.tokenize(message_text)
         if tokens and tokens[0].lower() in DOGBOT_TRIGGERS:
-            self.logger.chatlog(message_text, chat, user)
             await self.process_gpt_request('chat', message_text, update)
     
     async def process_private_message(self, update: 'Update') -> None:
+        self.logger.pmlog(message_text, user)
         user: 'User' = update.effective_user
         message_text = update.effective_message.text
-        self.logger.pmlog(message_text, user)
         await self.process_gpt_request('pm', message_text, update)
         
     @send_typing()        
