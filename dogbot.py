@@ -51,7 +51,7 @@ class Dog():
             with open('log.txt', 'a') as lf:
                 print(f'\tasking: {prompt}', file=lf)
             num_tokens, responce = self.gptapi.get_responce(prompt)
-            responce = f'tokens used: {num_tokens}  |  it costs: {num_tokens*2*10**-6:.2}$\n---\n{responce}'
+            responce = f'tokens used: {num_tokens}  |  it costs: {num_tokens*2*10**-4:.4f}¢\n---\n{responce}'
             await self.tg_bot.reply_on_message(update, responce)
     
     async def process_private_message(self, update: 'Update') -> None:
