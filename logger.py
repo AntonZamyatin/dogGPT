@@ -69,11 +69,11 @@ class Logger():
     def chatlog(self, text: str, chat: 'Chat', user: 'User') -> None:
         date, time = self.get_datetime_now()
         chat_id: int = chat.id
-        chat_name: str = chat.name
+        chat_fname: str = chat.full_name
         user_id: int = user.id
         user_fname: str = user.full_name
         if not chat_id in self.known_chat_ids:
-            self.log_new_chat(chat_id, chat_name)
+            self.log_new_chat(chat_id, chat_fname)
         logfile: str = self.chats_log_path + f'{chat_id}.log'
         with open(logfile, 'a') as lf:
             print(date, time, user_id, user_fname, text,
