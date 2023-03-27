@@ -55,7 +55,7 @@ class Logger():
         user_fname: str = user.full_name
         if not user_id in self.known_user_ids:
             self.log_new_user(user_id, user_fname)
-            self.known_chat_ids.add(user_id)
+            self.known_user_ids.add(user_id)
         logfile: str = self.users_log_path + f'{user_id}.log'
         with open(logfile, 'a') as lf:
             print(date, time, user_fname, text,
