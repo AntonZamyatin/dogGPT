@@ -7,6 +7,7 @@ from gptapi import GPT_API
 from dotenv import load_dotenv
 from nltk.tokenize import RegexpTokenizer
 from word_lists import DOGBOT_TRIGGERS, BAD_WORDS
+from functools import wraps
 
 if TYPE_CHECKING:
     from telegram import Update
@@ -30,6 +31,16 @@ class Dog():
         self.vrss_api_key: str = os.getenv('VRSS_API_KEY')
         self.tg_bot_token: str = os.getenv('TG_BOT_TOKEN')
     
+    def send_typing():
+        """Sends `action` while processing func command."""
+        def decorator(func):
+            @wraps(func)
+            async def command_func(self, message_text: str, update: str):
+                await self.tg_bot.set_typing(update.effective_chat)
+                return await func(self, message_text, update)
+            return command_func
+        return decorator
+    
     def write_to_botlog(self, text: str) -> None:
         now = datetime.now()
         logdir: str = f'{self.log_path}/botlog/'
@@ -39,7 +50,7 @@ class Dog():
         with open(logfile, 'a') as lf:
             print(f'{now.hour}:{now.minute}:{now.second}:{now.microsecond}',
                   text,sep='\t', file=lf)
-            
+    
     async def process_group_message(self, update: 'Update') -> None:
         message_text = update.effective_message.text
         if any([x in message_text.lower() for x in BAD_WORDS]):
@@ -47,12 +58,16 @@ class Dog():
         print('have message', message_text)
         tokens = self.tokenizer.tokenize(message_text)
         if tokens and tokens[0].lower() in DOGBOT_TRIGGERS:
-            prompt = ' '.join(message_text.split()[1:])
-            with open('log.txt', 'a') as lf:
-                print(f'\tasking: {prompt}', file=lf)
-            num_tokens, responce = self.gptapi.get_responce(prompt)
-            responce = f'tokens used: {num_tokens}  |  it costs: {num_tokens*2*10**-4:.4f}¢\n---\n{responce}'
-            await self.tg_bot.reply_on_message(update, responce)
+            await self.process_gpt_request(message_text, update)
+    
+    @send_typing()        
+    async def process_gpt_request(self, message_text: str, update: 'Update') -> None:
+        prompt = ' '.join(message_text.split()[1:])
+        with open('log.txt', 'a') as lf:
+            print(f'\tasking: {prompt}', file=lf)
+        num_tokens, responce = self.gptapi.get_responce(prompt)
+        responce = f'tokens used: {num_tokens}  |  it costs: {num_tokens*2*10**-4:.4f}¢\n---\n{responce}'
+        await self.tg_bot.reply_on_message(update, responce)
     
     async def process_private_message(self, update: 'Update') -> None:
         message_text = update.effective_message.text
