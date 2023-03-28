@@ -76,6 +76,9 @@ class Logger():
         if not chat_id in self.known_chat_ids:
             self.log_new_chat(chat_id, chat_fname)
             self.known_chat_ids.add(chat_id)
+        if not user_id in self.known_user_ids:
+            self.log_new_user(user_id, user_fname)
+            self.known_user_ids.add(user_id)
         logfile: str = self.chats_log_path + f'{chat_id}.log'
         with open(logfile, 'a') as lf:
             print(date, time, user_id, user_fname, text,
