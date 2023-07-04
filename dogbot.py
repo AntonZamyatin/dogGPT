@@ -48,8 +48,8 @@ class Dog():
         user: 'User' = update.effective_user
         chat: 'Chat' = update.effective_chat
         self.logger.chatlog(message_text, chat, user)
-        if any([x in message_text.lower() for x in BAD_WORDS]):
-            await update.effective_message.reply_text('Не ругайся')
+        # if any([x in message_text.lower() for x in BAD_WORDS]):
+        #    await update.effective_message.reply_text('Не ругайся')
         tokens = self.tokenizer.tokenize(message_text)
         if tokens and tokens[0].lower() in DOGBOT_TRIGGERS:
             await self.process_gpt_request('chat', message_text, update)
